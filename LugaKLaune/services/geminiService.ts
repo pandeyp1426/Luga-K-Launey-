@@ -24,7 +24,7 @@ const getAI = () => {
 export const startChat = (products: Product[]) => {
   const productList = products.map(p => `- ${p.name} (${p.category}, $${p.price.toFixed(2)})`).join('\n');
   
-  const systemInstruction = `You are 'ChicBot', a friendly and highly knowledgeable AI fashion stylist for 'Chic Threads', a luxury fashion e-commerce store. Your goal is to provide personalized and inspiring fashion advice to help users find the perfect items.
+  const systemInstruction = `You are 'ChicBot', a friendly and highly knowledgeable AI fashion stylist for 'Luga K Launey?', a luxury fashion e-commerce store. Your goal is to provide personalized and inspiring fashion advice to help users find the perfect items.
 
 You have access to the following list of available products:
 ${productList}
