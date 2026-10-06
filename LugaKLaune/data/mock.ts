@@ -1,25 +1,17 @@
-
 import { Product, User, Order } from '../types';
-
+// Illustrative catalog. Connect verified commerce data before launch.
 export const mockProducts: Product[] = [
-  { id: '1', name: 'Silk Evening Gown', price: 799.99, description: 'A stunning floor-length silk gown, perfect for formal events.', category: 'Clothing', imageUrl: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=800', stock: 10 },
-  { id: '2', name: 'Italian Leather Loafers', price: 450.00, description: 'Handcrafted from the finest Italian leather, these loafers blend comfort and style.', category: 'Shoes', imageUrl: 'https://images.unsplash.com/photo-1603808033192-082d6919d3e1?q=80&w=800', stock: 15 },
-  { id: '3', name: 'Classic Trench Coat', price: 550.00, description: 'A timeless beige trench coat, essential for any wardrobe.', category: 'Clothing', imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=800', stock: 20 },
-  { id: '4', name: 'Diamond Stud Earrings', price: 1200.00, description: 'Elegant 1-carat diamond stud earrings set in platinum.', category: 'Accessories', imageUrl: 'https://images.unsplash.com/photo-1617007439300-2d9721507a4a?q=80&w=800', stock: 5 },
-  { id: '5', name: 'Cashmere Sweater', price: 320.00, description: 'Luxuriously soft cashmere sweater in a versatile charcoal grey.', category: 'Clothing', imageUrl: 'https://images.unsplash.com/photo-1581655353564-df123a1682b8?q=80&w=800', stock: 25 },
-  { id: '6', name: 'Suede Ankle Boots', price: 380.00, description: 'Chic and comfortable suede ankle boots with a block heel.', category: 'Shoes', imageUrl: 'https://images.unsplash.com/photo-1590779233253-045b2040f8c5?q=80&w=800', stock: 12 },
-  { id: '7', name: 'Leather Tote Bag', price: 650.00, description: 'A spacious and stylish leather tote, perfect for work or weekend.', category: 'Accessories', imageUrl: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?q=80&w=800', stock: 8 },
-  { id: '8', name: 'Linen Blazer', price: 280.00, description: 'A lightweight and breathable linen blazer for a smart-casual look.', category: 'Clothing', imageUrl: 'https://images.unsplash.com/photo-1600275889372-2ab33a22b3a2?q=80&w=800', stock: 18 },
+  { id: '1', name: 'The Relaxed Blazer', price: 98, description: 'An easy, tailored layer that pulls everything together. Wear it over your favorite tee, or make it a matching moment with relaxed trousers.', category: 'Clothing', audience: 'Women', imageUrl: '/images/blazer.jpg', imageAlt: 'Relaxed tailored blazer', stock: 18, color: 'Sand', swatch: '#b7a28b', sizes: ['XS','S','M','L','XL'], tag: 'NEW', material: 'Soft woven fabric. Gentle cold wash; hang to dry.' },
+  { id: '2', name: 'The Everyday Tee', price: 32, description: 'The one you reach for on repeat. A relaxed silhouette with a classic crew neck, made for layering or keeping things beautifully simple.', category: 'Clothing', audience: 'Everyone', imageUrl: '/images/white-tee.jpg', imageAlt: 'Classic white crew neck T-shirt', stock: 30, color: 'White', swatch: '#ecebe6', sizes: ['XS','S','M','L','XL'], tag: 'THE ESSENTIALS', material: 'Soft jersey. Machine wash cold with similar colors.' },
+  { id: '3', name: 'The Straight-Leg Jean', price: 78, description: 'A familiar favorite with a fresh perspective. Easy through the leg, with a timeless denim wash that works with just about everything.', category: 'Clothing', audience: 'Everyone', imageUrl: '/images/jeans.jpg', imageAlt: 'Blue straight-leg denim jeans', stock: 22, color: 'Classic blue', swatch: '#6b8295', sizes: ['24','26','28','30','32','34'], tag: 'NEW', material: 'Denim. Wash inside out on a cold cycle.' },
+  { id: '4', name: 'The Everyday Shoulder Bag', price: 68, description: 'Your everyday, all-together bag. A clean shape, an easy shoulder strap, and just enough space for the things that come everywhere with you.', category: 'Accessories', audience: 'Everyone', imageUrl: '/images/black-bag.jpg', imageAlt: 'Black everyday shoulder bag', stock: 14, color: 'Black', swatch: '#282726', sizes: ['One size'], tag: 'NEW', material: 'Smooth finish. Wipe clean with a soft, dry cloth.' },
+  { id: '5', name: 'The Weekend Sneaker', price: 85, description: 'A low-key finishing touch for your off-duty uniform. A clean profile and everyday comfort, from the first coffee to the long way home.', category: 'Shoes', audience: 'Everyone', imageUrl: '/images/sneakers-neutral.jpg', imageAlt: 'White knit everyday sneakers', stock: 16, color: 'White', swatch: '#eeede7', sizes: ['US 6','US 7','US 8','US 9','US 10','US 11'], material: 'Spot clean with a damp cloth. Air dry.' },
+  { id: '6', name: 'The Soft Knit', price: 72, originalPrice: 90, description: 'A soft layer for slower mornings and everything after. Pair the relaxed shape with denim for an effortless, everyday look.', category: 'Clothing', audience: 'Men', imageUrl: '/images/knit-men.jpg', imageAlt: 'Man wearing a beige crewneck knit sweater', stock: 12, color: 'Oat', swatch: '#c2b6a2', sizes: ['S','M','L','XL'], tag: 'LAST CHANCE', material: 'Knit fabric. Hand wash cold and dry flat.' },
+  { id: '7', name: 'The Day-to-Night Dress', price: 92, description: 'Minimal effort, maximum possibilities. An easy statement for dinner plans, weekend wandering, and the moments in between.', category: 'Clothing', audience: 'Women', imageUrl: '/images/dress.jpg', imageAlt: 'Modern everyday dress', stock: 10, color: 'Black', swatch: '#272625', sizes: ['XS','S','M','L','XL'], material: 'Lightweight woven fabric. Gentle cold wash.' },
+  { id: '8', name: 'The Everyday Frames', price: 38, originalPrice: 48, description: 'The little detail that changes the whole look. A timeless frame shape for all your out-of-office moments.', category: 'Accessories', audience: 'Everyone', imageUrl: '/images/sunglasses.jpg', imageAlt: 'Everyday sunglasses', stock: 20, color: 'Black', swatch: '#292828', sizes: ['One size'], material: 'Clean with a soft lens cloth; store in a protective case.' },
 ];
-
 export const mockUsers: User[] = [
-  { id: '1', name: 'Alice Johnson', email: 'alice@example.com', role: 'customer' },
-  { id: '2', name: 'Admin User', email: 'admin@chicthreads.com', role: 'admin' },
+  { id: 'preview-customer', name: 'Hima Guest', email: 'guest@example.com', role: 'customer' },
+  { id: 'preview-admin', name: 'Hima Studio', email: 'studio@example.com', role: 'admin' },
 ];
-
-export const mockOrders: Order[] = [
-    { id: 'ORD001', userId: '1', date: '2023-10-26', items: [{ ...mockProducts[0], quantity: 1 }], total: 799.99, status: 'Delivered' },
-    { id: 'ORD002', userId: '1', date: '2023-11-15', items: [{ ...mockProducts[2], quantity: 1 }, { ...mockProducts[5], quantity: 1 }], total: 930.00, status: 'Shipped' },
-    { id: 'ORD003', userId: '1', date: '2023-11-20', items: [{ ...mockProducts[4], quantity: 2 }], total: 640.00, status: 'Processing' },
-];
-
+export const mockOrders: Order[] = [];

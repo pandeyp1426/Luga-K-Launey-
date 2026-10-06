@@ -1,116 +1,34 @@
-
-import React, { useState } from 'react';
-import { useApp } from '../context/AppContext';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-
-const CheckoutPage: React.FC = () => {
-  const { cart, cartTotal, clearCart } = useApp();
-  const [isOrderPlaced, setIsOrderPlaced] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // This is a simulation. In a real app, you'd process payment here.
-    console.log("Simulating order placement...");
-    setIsOrderPlaced(true);
-    clearCart();
-  };
-
-  if (isOrderPlaced) {
-    return (
-      <div className="text-center py-20 bg-white rounded-lg shadow-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-green-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <h1 className="text-3xl font-bold font-serif text-gray-900 mt-4">Thank You for Your Order!</h1>
-        <p className="mt-2 text-gray-600">Your order has been placed successfully. You can track its status in your account.</p>
-        <Link
-          to="/account"
-          className="mt-6 inline-block bg-gray-800 text-white py-2 px-6 rounded-md hover:bg-gray-900 transition-colors"
-        >
-          View My Orders
-        </Link>
-      </div>
-    );
-  }
-
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-      <div className="bg-white rounded-lg shadow-lg p-8">
-        <h2 className="text-2xl font-bold font-serif text-gray-900 mb-6">Shipping & Payment</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="space-y-6">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
-              <input type="email" id="email" className="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required />
-            </div>
-            <div>
-              <h3 className="text-lg font-medium text-gray-900">Shipping Information</h3>
-              <div className="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
-                <input type="text" placeholder="First name" className="block w-full border-gray-300 rounded-md shadow-sm" required />
-                <input type="text" placeholder="Last name" className="block w-full border-gray-300 rounded-md shadow-sm" required />
-                <div className="sm:col-span-2">
-                  <input type="text" placeholder="Address" className="block w-full border-gray-300 rounded-md shadow-sm" required />
-                </div>
-                <input type="text" placeholder="City" className="block w-full border-gray-300 rounded-md shadow-sm" required />
-                <input type="text" placeholder="State / Province" className="block w-full border-gray-300 rounded-md shadow-sm" required />
-                <input type="text" placeholder="ZIP / Postal code" className="block w-full border-gray-300 rounded-md shadow-sm" required />
-              </div>
-            </div>
-            <div>
-              <h3 className="text-lg font-medium text-gray-900">Payment Details (Simulation)</h3>
-              <div className="mt-4 grid grid-cols-1 gap-y-6">
-                <input type="text" placeholder="Card number" className="block w-full border-gray-300 rounded-md shadow-sm" defaultValue="**** **** **** 4242" />
-                <input type="text" placeholder="Name on card" className="block w-full border-gray-300 rounded-md shadow-sm" />
-                <div className="grid grid-cols-2 gap-4">
-                  <input type="text" placeholder="Expiration date (MM/YY)" className="block w-full border-gray-300 rounded-md shadow-sm" />
-                  <input type="text" placeholder="CVC" className="block w-full border-gray-300 rounded-md shadow-sm" />
-                </div>
-              </div>
-            </div>
-          </div>
-          <button type="submit" className="mt-8 w-full bg-gray-800 text-white py-3 px-6 rounded-md text-lg hover:bg-gray-900 transition-colors">
-            Place Order
-          </button>
-        </form>
-      </div>
-      <div className="bg-gray-50 rounded-lg shadow-inner p-8">
-        <h2 className="text-2xl font-bold font-serif text-gray-900 mb-6">Order Summary</h2>
-        <div className="space-y-4">
-          {cart.map(item => (
-            <div key={item.id} className="flex justify-between items-center">
-              <div className="flex items-center space-x-4">
-                <img src={item.imageUrl} alt={item.name} className="w-16 h-16 object-cover rounded-md" />
-                <div>
-                  <p className="font-semibold">{item.name}</p>
-                  <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
-                </div>
-              </div>
-              <p className="font-semibold">${(item.price * item.quantity).toFixed(2)}</p>
-            </div>
-          ))}
-        </div>
-        <div className="mt-8 border-t border-gray-200 pt-6 space-y-2">
-          <div className="flex justify-between">
-            <p>Subtotal</p>
-            <p>${cartTotal.toFixed(2)}</p>
-          </div>
-          <div className="flex justify-between">
-            <p>Shipping (est.)</p>
-            <p>$15.00</p>
-          </div>
-          <div className="flex justify-between">
-            <p>Taxes (est.)</p>
-            <p>${(cartTotal * 0.08).toFixed(2)}</p>
-          </div>
-          <div className="flex justify-between text-lg font-bold mt-4 border-t border-gray-200 pt-4">
-            <p>Total</p>
-            <p>${(cartTotal + 15 + cartTotal * 0.08).toFixed(2)}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default CheckoutPage;
+import { money, useApp } from '../context/AppContext';
+import { Order } from '../types';
+import Icon from '../components/Icon';
+import OrderSummary from '../components/OrderSummary';
+export default function CheckoutPage() {
+  const { cart, placeOrder } = useApp();
+  const [order, setOrder] = useState<Order | null>(null);
+  const [error, setError] = useState('');
+  const submitting = useRef(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const fields = [
+    { name: 'email', label: 'Email address', type: 'email', auto: 'email', full: true },
+    { name: 'firstName', label: 'First name', auto: 'given-name' },
+    { name: 'lastName', label: 'Last name', auto: 'family-name' },
+    { name: 'address', label: 'Street address', auto: 'street-address', full: true },
+    { name: 'city', label: 'City', auto: 'address-level2' },
+    { name: 'state', label: 'State', auto: 'address-level1' },
+    { name: 'zip', label: 'ZIP code', auto: 'postal-code' },
+  ];
+  if (order) return <div className="empty-state shell confirmation"><span className="confirmation-icon"><Icon name="check" width="32" height="32"/></span><p className="eyebrow">LOOKING GOOD</p><h1>Your preview is complete.</h1><p>No payment was taken and no items will be shipped.<br/>Your sample order is ready to view in this session.</p><div className="confirmation-order"><span>{order.id}</span><strong>{money(order.total)} estimated</strong></div><Link className="button button-red" to="/account">View preview orders <Icon name="arrow"/></Link><Link className="text-link" to="/shop">Keep exploring</Link></div>;
+  if (!cart.length) return <div className="empty-state shell"><Icon name="bag" width="45" height="45"/><h1>Your bag is empty.</h1><p>Add a piece before continuing to checkout.</p><Link to="/shop" className="button button-red">Explore the collection</Link></div>;
+  return <div className="shell page-spacing"><nav className="breadcrumbs" aria-label="Checkout progress"><Link to="/cart">Bag</Link><span>/</span><span aria-current="step">Checkout</span><span>/</span><span>Confirmation</span></nav><h1 className="page-title">Almost yours.</h1><div className="preview-notice"><Icon name="sparkle"/><p><strong>You’re exploring a preview.</strong> Use sample details to try checkout. No payment is collected and no order is sent.</p></div>
+    <div className="cart-layout checkout-layout"><form ref={formRef} className="checkout-form" onSubmit={e => { e.preventDefault(); if (submitting.current) return; submitting.current = true; const placed = placeOrder(); if (placed) { setOrder(placed); window.scrollTo(0,0); } else { setError('Your bag changed. Please review it before trying again.'); submitting.current = false; } }}>
+      <div className="form-section-heading"><h2>Delivery details</h2><button className="underlined-button" type="button" onClick={() => { const sample: Record<string,string> = { email: 'guest@example.com', firstName: 'Hima', lastName: 'Guest', address: '123 Sample Street', city: 'Chicago', state: 'Illinois', zip: '60601' }; for (const [name,value] of Object.entries(sample)) { const field = formRef.current?.elements.namedItem(name); if (field instanceof HTMLInputElement) field.value = value; } }}>Use sample details</button></div>
+      <div className="form-grid">{fields.map(f => <label key={f.name} className={f.full ? 'span-two' : ''} htmlFor={f.name}>{f.label}<input id={f.name} name={f.name} type={f.type || 'text'} autoComplete={f.auto} required maxLength={f.name === 'zip' ? 10 : 120}/></label>)}<label htmlFor="country">Country<select id="country" name="country" autoComplete="country-name"><option>United States</option></select></label></div>
+      <div className="payment-preview"><Icon name="lock"/><div><h2>Payment preview</h2><p>No card details needed. You won’t be charged.</p></div><span>$0 due</span></div>
+      {error && <p className="field-error" role="alert">{error} <Link to="/cart" className="inline-link">Review bag</Link></p>}
+      <button className="button button-red full-width" type="submit">Place preview order <Icon name="arrow"/></button><p className="form-footnote">Sample delivery details are not saved or sent.</p>
+    </form><OrderSummary checkout/></div>
+  </div>;
+}
 

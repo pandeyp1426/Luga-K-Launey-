@@ -1,100 +1,19 @@
-
-import React, { useState } from 'react';
-import { useApp } from '../context/AppContext';
-import { Order } from '../types';
-
-const AccountPage: React.FC = () => {
-  const { user, orders } = useApp();
+import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { money, useApp } from '../context/AppContext';
+import Icon from '../components/Icon';
+export default function AccountPage() {
+  const { user, orders, wishlist, logout } = useApp();
   const [rating, setRating] = useState(0);
-  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
-
-  if (!user) return null;
-
-  const userOrders = orders.filter(o => o.userId === user.id);
-
-  const getStatusColor = (status: Order['status']) => {
-    switch (status) {
-      case 'Delivered': return 'bg-green-100 text-green-800';
-      case 'Shipped': return 'bg-blue-100 text-blue-800';
-      case 'Processing': return 'bg-yellow-100 text-yellow-800';
-      case 'Cancelled': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const handleFeedbackSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFeedbackSubmitted(true);
-  };
-
-  return (
-    <div className="space-y-12">
-      <div>
-        <h1 className="text-4xl font-bold font-serif text-gray-900">My Account</h1>
-        <div className="mt-6 bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold">Profile Information</h2>
-          <p className="mt-2"><strong>Name:</strong> {user.name}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Role:</strong> {user.role}</p>
-        </div>
-      </div>
-
-      <div>
-        <h2 className="text-3xl font-bold font-serif text-gray-900">Order History</h2>
-        <div className="mt-6 space-y-6">
-          {userOrders.length > 0 ? userOrders.map(order => (
-            <div key={order.id} className="bg-white p-6 rounded-lg shadow-md">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="text-lg font-semibold">Order #{order.id}</h3>
-                  <p className="text-sm text-gray-500">Date: {order.date}</p>
-                </div>
-                <span className={`px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(order.status)}`}>
-                  {order.status}
-                </span>
-              </div>
-              <div className="mt-4 border-t pt-4">
-                {order.items.map(item => (
-                  <div key={item.id} className="flex justify-between items-center py-2">
-                    <p>{item.name} (x{item.quantity})</p>
-                    <p>${(item.price * item.quantity).toFixed(2)}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="text-right font-bold mt-2">Total: ${order.total.toFixed(2)}</div>
-            </div>
-          )) : (
-            <p className="bg-white p-6 rounded-lg shadow-md">You have no past orders.</p>
-          )}
-        </div>
-      </div>
-
-      <div>
-        <h2 className="text-3xl font-bold font-serif text-gray-900">Rate Your Experience</h2>
-        {feedbackSubmitted ? (
-          <div className="mt-6 bg-white p-6 rounded-lg shadow-md text-center">
-            <p className="text-green-600 font-semibold">Thank you for your feedback!</p>
-          </div>
-        ) : (
-          <form onSubmit={handleFeedbackSubmit} className="mt-6 bg-white p-6 rounded-lg shadow-md">
-            <p className="font-semibold mb-2">How would you rate your overall experience?</p>
-            <div className="flex items-center space-x-2 mb-4">
-              {[1, 2, 3, 4, 5].map(star => (
-                <button type="button" key={star} onClick={() => setRating(star)} className="focus:outline-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" className={`h-8 w-8 ${rating >= star ? 'text-yellow-400' : 'text-gray-300'}`} viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                </button>
-              ))}
-            </div>
-            <textarea placeholder="Any additional comments? (optional)" className="w-full border-gray-300 rounded-md shadow-sm" rows={3}></textarea>
-            <button type="submit" className="mt-4 bg-gray-800 text-white py-2 px-4 rounded-md hover:bg-gray-900">Submit Feedback</button>
-          </form>
-        )}
-      </div>
-    </div>
-  );
-};
-
-export default AccountPage;
+  const [feedback, setFeedback] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [feedbackError, setFeedbackError] = useState('');
+  const userOrders = orders.filter(o => o.userId === (user?.id || 'preview-customer'));
+  return <div className="shell page-spacing"><p className="eyebrow">YOUR HIMA</p><div className="section-heading"><h1 className="page-title">Make yourself at home.</h1>{user ? <button className="underlined-button" onClick={logout}>Leave preview account</button> : <Link className="text-link" to="/login">Explore your profile <Icon name="arrow"/></Link>}</div>
+    <div className="account-overview"><div><Icon name="user"/><h2>{user?.name || 'Hima Guest'}</h2><p>Preview profile · No personal details stored</p>{user?.role === 'admin' && <Link className="text-link" to="/admin">Store management</Link>}</div><Link to="/wishlist"><Icon name="heart"/><h2>{wishlist.length} saved {wishlist.length === 1 ? 'piece' : 'pieces'}</h2><p>All the things you’ve had your eye on. <Icon name="arrow" width="17" height="17"/></p></Link></div>
+    <div className="section-heading"><h2 className="subheading">Your preview orders</h2><span className="muted">Available during this session</span></div>
+    {userOrders.length ? <div className="order-list">{userOrders.map(o => <article className="order-card" key={o.id}><div className="order-card-heading"><div><h3>{o.id}</h3><p>{new Date(o.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p></div><span className="status-label">{o.status} · Preview</span></div><div className="order-items">{o.items.map(i => <div key={i.lineId}><img src={i.imageUrl} alt="" width="52" height="65"/><div><Link to={`/product/${i.id}`}>{i.name}</Link><p>{i.size} · Qty {i.quantity}</p></div><span>{money(i.price * i.quantity)}</span></div>)}</div><div className="order-card-total"><span>No payment taken</span><strong>Estimated total {money(o.total)}</strong></div></article>)}</div> : <div className="empty-orders"><Icon name="bag" width="30" height="30"/><h3>Your story starts here.</h3><p>When you complete a preview checkout, your sample order will appear here.</p><Link className="text-link" to="/shop">Find your first favorite <Icon name="arrow"/></Link></div>}
+    <form className="feedback-form" onSubmit={e => { e.preventDefault(); if (!rating) { setFeedbackError('Choose a rating before saving your feedback.'); return; } try { sessionStorage.setItem('hima-feedback', JSON.stringify({ rating, feedback })); setSubmitted(true); setFeedbackError(''); } catch { setFeedbackError('Feedback could not be saved in this browser. Please try again.'); } }}><h2 className="subheading">How did it feel?</h2><p>Try the feedback form. Your response is saved only in this browser session.</p>{submitted ? <p className="feedback-success" role="status"><Icon name="check"/> Your preview feedback is saved. Thank you.</p> : <><fieldset className="rating-fieldset"><legend className="sr-only">Rate your shopping experience</legend>{[1,2,3,4,5].map(n => <label key={n} className={rating >= n ? 'rated' : ''}><input type="radio" name="rating" value={n} checked={rating === n} onChange={() => setRating(n)}/><span aria-hidden="true">★</span><span className="sr-only">{n} {n === 1 ? 'star' : 'stars'}</span></label>)}</fieldset><label htmlFor="feedback" className="sr-only">Your feedback</label><textarea id="feedback" value={feedback} onChange={e => setFeedback(e.target.value)} maxLength={500} placeholder="Anything you’d like to share? (Optional)" rows={3}/>{feedbackError && <p className="field-error" role="alert">{feedbackError}</p>}<button className="button button-dark" type="submit">Save preview feedback <Icon name="arrow"/></button></>}</form>
+  </div>;
+}
 

@@ -1,76 +1,17 @@
-
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useApp } from '../context/AppContext';
-import { CartItem } from '../types';
-
-const CartPage: React.FC = () => {
-  const { cart, removeFromCart, updateQuantity, cartTotal } = useApp();
-  const navigate = useNavigate();
-
-  const handleCheckout = () => {
-    navigate('/checkout');
-  };
-
-  if (cart.length === 0) {
-    return (
-      <div className="text-center py-20 bg-white rounded-lg shadow-md">
-        <h1 className="text-3xl font-bold font-serif text-gray-900">Your Cart is Empty</h1>
-        <p className="mt-4 text-gray-600">Looks like you haven't added anything to your cart yet.</p>
-        <Link
-          to="/"
-          className="mt-6 inline-block bg-gray-800 text-white py-2 px-6 rounded-md hover:bg-gray-900 transition-colors"
-        >
-          Continue Shopping
-        </Link>
-      </div>
-    );
-  }
-
-  return (
-    <div className="bg-white rounded-lg shadow-lg p-6 md:p-8">
-      <h1 className="text-3xl md:text-4xl font-bold font-serif text-gray-900 mb-8">Shopping Cart</h1>
-      <div className="space-y-6">
-        {cart.map((item: CartItem) => (
-          <div key={item.id} className="flex items-center justify-between border-b border-gray-200 pb-6">
-            <div className="flex items-center space-x-4">
-              <img src={item.imageUrl} alt={item.name} className="w-24 h-24 object-cover rounded-md" />
-              <div>
-                <h2 className="text-lg font-semibold text-gray-800">{item.name}</h2>
-                <p className="text-sm text-gray-500">${item.price.toFixed(2)}</p>
-                <button onClick={() => removeFromCart(item.id)} className="text-xs text-red-500 hover:text-red-700 mt-1">Remove</button>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <input
-                type="number"
-                min="1"
-                value={item.quantity}
-                onChange={(e) => updateQuantity(item.id, parseInt(e.target.value))}
-                className="w-16 text-center border border-gray-300 rounded-md"
-                aria-label={`Quantity for ${item.name}`}
-              />
-              <p className="text-lg font-semibold text-gray-800 w-24 text-right">${(item.price * item.quantity).toFixed(2)}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="mt-8 flex flex-col items-end">
-        <div className="text-right">
-          <p className="text-lg text-gray-600">Subtotal</p>
-          <p className="text-3xl font-bold text-gray-900">${cartTotal.toFixed(2)}</p>
-          <p className="text-sm text-gray-500 mt-1">Taxes and shipping calculated at checkout.</p>
-        </div>
-        <button
-          onClick={handleCheckout}
-          className="mt-6 w-full sm:w-auto bg-gray-800 text-white py-3 px-8 rounded-md text-lg hover:bg-gray-900 transition-colors"
-        >
-          Proceed to Checkout
-        </button>
-      </div>
-    </div>
-  );
-};
-
-export default CartPage;
+import { Link } from 'react-router-dom';
+import { money, useApp } from '../context/AppContext';
+import Icon from '../components/Icon';
+import OrderSummary from '../components/OrderSummary';
+export default function CartPage() {
+  const { cart, removeFromCart, updateQuantity, products } = useApp();
+  const count = cart.reduce((n,i) => n + i.quantity, 0);
+  if (!cart.length) return <div className="empty-state shell"><Icon name="bag" width="48" height="48"/><p className="eyebrow">ROOM FOR SOMETHING GOOD</p><h1>Your bag is waiting.</h1><p>Let’s find a few pieces that feel like you.</p><Link to="/shop" className="button button-red">Explore the collection <Icon name="arrow"/></Link><Link className="text-link" to="/wishlist">See your saved pieces</Link></div>;
+  return <div className="shell page-spacing"><div className="section-heading"><div><p className="eyebrow">GOOD CHOICES, ALL TOGETHER</p><h1 className="page-title">Your bag. <span className="title-count">({count})</span></h1></div><Link to="/shop" className="text-link">Keep exploring <Icon name="arrow"/></Link></div>
+    <div className="cart-layout"><div className="cart-items">{cart.map(item => {
+      const stock = products.find(p => p.id === item.id)?.stock || 0;
+      const totalQuantity = cart.filter(i => i.id === item.id).reduce((n,i) => n + i.quantity, 0);
+      return <article className="cart-item" key={item.lineId}><Link to={`/product/${item.id}`} className="cart-image"><img src={item.imageUrl} alt={item.imageAlt} width="120" height="150"/></Link><div className="cart-item-info"><h2><Link to={`/product/${item.id}`}>{item.name}</Link></h2><p>{item.color} <span> / </span> {item.size}</p><p>{money(item.price)} each</p><div className="cart-item-controls"><div className="quantity-control"><button disabled={item.quantity <= 1} aria-label={`Decrease quantity of ${item.name}, ${item.size}`} onClick={() => updateQuantity(item.lineId, item.quantity - 1)}><Icon name="minus" width="16" height="16"/></button><span aria-label={`Quantity ${item.quantity}`}>{item.quantity}</span><button disabled={totalQuantity >= stock} aria-label={`Increase quantity of ${item.name}, ${item.size}`} onClick={() => updateQuantity(item.lineId, item.quantity + 1)}><Icon name="plus" width="16" height="16"/></button></div><button className="underlined-button" onClick={() => removeFromCart(item.lineId)} aria-label={`Remove ${item.name}, ${item.size} from bag`}>Remove</button></div></div><p className="cart-line-total">{money(item.price * item.quantity)}</p></article>;
+    })}</div><OrderSummary/></div>
+  </div>;
+}
 

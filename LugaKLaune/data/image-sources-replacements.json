@@ -1,0 +1,30 @@
+{
+  "generatedAt": "2026-09-09",
+  "license": {
+    "name": "Pexels License",
+    "url": "https://www.pexels.com/license/",
+    "summary": "Free website and e-commerce use, attribution optional, modifications allowed. Do not imply endorsement by people or brands."
+  },
+  "items": [
+    {
+      "file": "knit-men.jpg",
+      "localPath": "C:\\Users\\pandeyp1426\\Hima\\hima-assets\\knit-men.jpg",
+      "sourcePage": "https://www.pexels.com/photo/photo-of-man-wearing-beige-sweater-3754251/",
+      "imageUrl": "https://images.pexels.com/photos/3754251/pexels-photo-3754251.jpeg?auto=compress&dpr=1&h=1200&w=1800",
+      "photographer": "Ba Tik",
+      "name": "Soft knit crewneck",
+      "visuallyVerified": true,
+      "note": "Male model in beige fine knit crewneck sweater with ribbed cuffs, black shirt collar and black trousers; warm beige modern interior. Portrait 800 x 1200."
+    },
+    {
+      "file": "sneakers-neutral.jpg",
+      "localPath": "C:\\Users\\pandeyp1426\\Hima\\hima-assets\\sneakers-neutral.jpg",
+      "sourcePage": "https://www.pexels.com/photo/person-wearing-white-rubber-shoes-10877548/",
+      "imageUrl": "https://images.pexels.com/photos/10877548/pexels-photo-10877548.jpeg?auto=compress&dpr=1&h=1200&w=1800",
+      "photographer": "Елена Вотинцева",
+      "name": "Everyday knit sneakers",
+      "visuallyVerified": true,
+      "note": "White knit lace-up sneakers with textured white soles worn with pale blush joggers, light gray studio background. No prominent brand logo visible. Portrait 900 x 1200."
+    }
+  ]
+}
